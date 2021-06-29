@@ -3,12 +3,17 @@ package main
 import (
 	"fmt"
 	"os"
+	"tezos/missedEventsNotifier/internal/configs"
 
 	client "github.com/goat-systems/go-tezos/v4/rpc"
 )
 
 func main() {
-	rpc, err := client.New("http://127.0.0.1:8732")
+	apiLink, err := configs.GetApiLink("../config/config.yaml")
+	if err != nil {
+		fmt.Printf("failed to locate config %v", err)
+	}
+	rpc, err := client.New(apiLink)
 	if err != nil {
 		fmt.Printf("failed tp connect to network: %v", err)
 	}
