@@ -2,18 +2,23 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
 	"strconv"
 )
 
 const (
 	currentBlockSuffix = "/chains/main/blocks/head"
-	endorsementsSuffix = "/chains/main/blocks/head/helpers/endorsing_rights"
+	listSuffixFormat   = "/chains/main/blocks/head/helpers/%s_rights"
+	endorsing          = "endorsing"
+	baking             = "baking"
 )
 
 type API interface {
 	GetCurrentBlock() (b *Block, err error)
 	GetEndorsements() ([]Endorsement, error)
+	GetBakes() ([]Bake, error)
 }
 
 type api struct {
@@ -35,8 +40,8 @@ func (a *api) GetCurrentBlock() (b *Block, err error) {
 	return b, nil
 }
 
-func (a *api) GetEndorsements() (endorsements []Endorsement, err error) {
-	req, err := http.NewRequest("GET", a.baseURl+endorsementsSuffix, nil)
+func (a *api) getList(what string) (io.ReadCloser, error) {
+	req, err := http.NewRequest("GET", a.baseURl+fmt.Sprintf(listSuffixFormat, what), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -48,11 +53,31 @@ func (a *api) GetEndorsements() (endorsements []Endorsement, err error) {
 	if err != nil {
 		return nil, err
 	}
-	err = json.NewDecoder(resp.Body).Decode(endorsements)
+	return resp.Body, err
+}
+
+func (a *api) GetEndorsements() (endorsements []Endorsement, err error) {
+	body, err := a.getList(endorsing)
+	if err != nil {
+		return nil, err
+	}
+	err = json.NewDecoder(body).Decode(&endorsements)
 	if err != nil {
 		return nil, err
 	}
 	return endorsements, nil
+}
+
+func (a *api) GetBakes() (bakes []Bake, err error) {
+	body, err := a.getList(endorsing)
+	if err != nil {
+		return nil, err
+	}
+	err = json.NewDecoder(body).Decode(&bakes)
+	if err != nil {
+		return nil, err
+	}
+	return bakes, nil
 }
 
 func NewApi(baseURl, delegate string, cycle int) API {

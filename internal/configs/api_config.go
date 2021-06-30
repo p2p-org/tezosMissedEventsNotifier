@@ -1,8 +1,9 @@
 package configs
 
 import (
-	"gopkg.in/yaml.v2"
 	"os"
+
+	"gopkg.in/yaml.v2"
 )
 
 type ApiConfig struct {

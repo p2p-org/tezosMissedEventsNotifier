@@ -19,9 +19,9 @@ func Test_api_GetCurrentBlock(t *testing.T) {
 }
 
 func Test_api_GetEndorsements(t *testing.T) {
-	b1, err := api1.GetCurrentBlock()
+	b1, err := api1.GetEndorsements()
 	assert.NoError(t, err)
-	b2, err := api2.GetCurrentBlock()
+	b2, err := api2.GetEndorsements()
 	assert.NoError(t, err)
-	assert.Equal(t, b1.Hash, b2.Hash)
+	assert.Equal(t, b1, b2)
 }
