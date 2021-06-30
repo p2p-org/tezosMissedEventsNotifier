@@ -10,7 +10,7 @@ type ApiConfig struct {
 }
 
 func GetApiLink(filename string) (str string, err error) {
-	f, err := os.Open("config.yml")
+	f, err := os.Open(filename)
 	if err != nil {
 		return "", err
 	}
