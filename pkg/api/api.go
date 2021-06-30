@@ -3,7 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"io"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -40,7 +40,7 @@ func (a *api) GetCurrentBlock() (b *Block, err error) {
 	return b, nil
 }
 
-func (a *api) getList(what string) (io.ReadCloser, error) {
+func (a *api) getList(what string) (*http.Response, error) {
 	req, err := http.NewRequest("GET", a.baseURl+fmt.Sprintf(listSuffixFormat, what), nil)
 	if err != nil {
 		return nil, err
@@ -49,19 +49,22 @@ func (a *api) getList(what string) (io.ReadCloser, error) {
 	q.Add("cycle", strconv.Itoa(a.cycle))
 	q.Add("delegate", a.delegate)
 	req.URL.RawQuery = q.Encode()
+	log.Println(req.URL.String())
 	resp, err := http.Get(req.URL.String())
 	if err != nil {
 		return nil, err
 	}
-	return resp.Body, err
+	return resp, err
 }
 
 func (a *api) GetEndorsements() (endorsements []Endorsement, err error) {
-	body, err := a.getList(endorsing)
+	resp, err := a.getList(endorsing)
 	if err != nil {
 		return nil, err
 	}
-	err = json.NewDecoder(body).Decode(&endorsements)
+	//b, err := ioutil.ReadAll(resp.Body)
+	//log.Println(string(b))
+	err = json.NewDecoder(resp.Body).Decode(&endorsements)
 	if err != nil {
 		return nil, err
 	}
@@ -69,11 +72,11 @@ func (a *api) GetEndorsements() (endorsements []Endorsement, err error) {
 }
 
 func (a *api) GetBakes() (bakes []Bake, err error) {
-	body, err := a.getList(endorsing)
+	resp, err := a.getList(endorsing)
 	if err != nil {
 		return nil, err
 	}
-	err = json.NewDecoder(body).Decode(&bakes)
+	err = json.NewDecoder(resp.Body).Decode(&bakes)
 	if err != nil {
 		return nil, err
 	}
@@ -81,5 +84,5 @@ func (a *api) GetBakes() (bakes []Bake, err error) {
 }
 
 func NewApi(baseURl, delegate string, cycle int) API {
-	return &api{baseURl: baseURl, delegate: delegate}
+	return &api{baseURl: baseURl, delegate: delegate, cycle: cycle}
 }

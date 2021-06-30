@@ -7,21 +7,23 @@ import (
 )
 
 type ApiConfig struct {
-	host string `yaml:"host"`
+	Host     string `yaml:"host"`
+	Delegate string `yaml:"delegate"`
+	Cycle    string `yaml:"cycle"`
 }
 
-func GetApiLink(filename string) (str string, err error) {
+func GetConfig(filename string) (config *ApiConfig, err error) {
 	f, err := os.Open(filename)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	defer f.Close()
 
-	var cfg ApiConfig
+	config = new(ApiConfig)
 	decoder := yaml.NewDecoder(f)
-	err = decoder.Decode(&cfg)
+	err = decoder.Decode(config)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return cfg.host, err
+	return config, err
 }

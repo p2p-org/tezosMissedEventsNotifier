@@ -1,6 +1,9 @@
 package api
 
-import "time"
+import (
+	"log"
+	"time"
+)
 
 type Block struct {
 	Protocol string `json:"protocol"`
@@ -103,4 +106,14 @@ type Block struct {
 			} `json:"metadata"`
 		} `json:"contents"`
 	} `json:"operations"`
+}
+
+func CheckBlock(b *Block) bool {
+	ret := b.Header.Priority > 0
+	if ret {
+		log.Printf("Failed baking of %s\n", b.Hash)
+	} else {
+		log.Printf("Success with block %s", b.Hash)
+	}
+	return ret
 }
