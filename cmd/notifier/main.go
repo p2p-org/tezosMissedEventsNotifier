@@ -4,9 +4,8 @@ import (
 	"log"
 	"strconv"
 
-	"github.com/jasonlvhit/gocron"
-
 	"tezos/missedEventsNotifier/internal/configs"
+	"tezos/missedEventsNotifier/internal/scheduling"
 	"tezos/missedEventsNotifier/pkg/api"
 )
 
@@ -20,8 +19,7 @@ func main() {
 		log.Fatalln(err)
 	}
 	tzApi := api.NewApi(config.Host, config.Delegate, cycle)
-	for {
-		// getting endorsements timetable
-
-	}
+	scheduler := scheduling.NewScheduler(tzApi)
+	scheduler.ScheduleEndorsements()
+	scheduler.ScheduleBakings()
 }
