@@ -12,9 +12,9 @@ type Endorsement struct {
 	EstimatedTime time.Time `json:"estimated_time,omitempty"`
 }
 
-func CheckEndorsement(e *Endorsement, api API, slots []int) bool {
+func CheckEndorsement(e *Endorsement, api API) bool {
 	m := make(map[int]bool)
-	for _, item := range slots {
+	for _, item := range e.Slots {
 		m[item] = false
 	}
 	block, err := api.GetCurrentBlock()
