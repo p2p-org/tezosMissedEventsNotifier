@@ -3,6 +3,9 @@ package api
 import (
 	"log"
 	"time"
+
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 )
 
 type Block struct {
@@ -108,9 +111,17 @@ type Block struct {
 	} `json:"operations"`
 }
 
+var (
+	bakesMissed = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "bakes_missed_total",
+		Help: "Number of missed bakes",
+	})
+)
+
 func CheckBlock(b *Block) bool {
 	ret := b.Header.Priority > 0
 	if ret {
+		bakesMissed.Inc()
 		log.Printf("Failed baking of %s\n", b.Hash)
 	} else {
 		log.Printf("Success with block %s", b.Hash)

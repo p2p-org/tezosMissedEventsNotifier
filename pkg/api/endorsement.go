@@ -3,6 +3,9 @@ package api
 import (
 	"log"
 	"time"
+
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 )
 
 type Endorsement struct {
@@ -11,6 +14,13 @@ type Endorsement struct {
 	Slots         []int     `json:"slots"`
 	EstimatedTime time.Time `json:"estimated_time,omitempty"`
 }
+
+var (
+	endorsementsMissed = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "endorsements_missed_total",
+		Help: "Number of missed endorsements",
+	})
+)
 
 func CheckEndorsement(e *Endorsement, api API) bool {
 	m := make(map[int]bool)
@@ -39,6 +49,7 @@ func CheckEndorsement(e *Endorsement, api API) bool {
 	for _, value := range m {
 		if !value {
 			log.Printf("Endorsement at %v failed", e.EstimatedTime)
+			endorsementsMissed.Inc()
 			return false
 		}
 	}
