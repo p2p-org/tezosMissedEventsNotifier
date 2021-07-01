@@ -19,11 +19,11 @@ func GetConfig(filename string) (config *ApiConfig, err error) {
 	}
 	defer f.Close()
 
-	config = new(ApiConfig)
+	var conf ApiConfig
 	decoder := yaml.NewDecoder(f)
-	err = decoder.Decode(config)
+	err = decoder.Decode(&conf)
 	if err != nil {
 		return nil, err
 	}
-	return config, err
+	return &conf, err
 }

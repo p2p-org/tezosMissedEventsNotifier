@@ -3,7 +3,6 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 )
@@ -49,7 +48,6 @@ func (a *api) getList(what string) (*http.Response, error) {
 	q.Add("cycle", strconv.Itoa(a.cycle))
 	q.Add("delegate", a.delegate)
 	req.URL.RawQuery = q.Encode()
-	log.Println(req.URL.String())
 	resp, err := http.Get(req.URL.String())
 	if err != nil {
 		return nil, err
