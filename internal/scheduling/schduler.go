@@ -61,7 +61,7 @@ func (s *scheduler) ScheduleEndorsements() {
 func (s *scheduler) ScheduleBakings() {
 	log.Println("Get bakes schedule")
 	bakes, err := s.api.GetBakes()
-	log.Println("Get bakes schedule")
+	log.Println("Got bakes schedule")
 	if err != nil {
 		log.Println(err)
 	}
