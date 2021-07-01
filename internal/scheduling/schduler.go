@@ -45,14 +45,14 @@ func (s *scheduler) ScheduleEndorsements() {
 		lastPoint = point
 		s.endorsementsWg.Add(1)
 		go func() {
-			time.AfterFunc(point.Sub(time.Now()), func() {
+			time.AfterFunc(point.Sub(time.Now().UTC()), func() {
 				api.CheckEndorsement(&endorsement, s.api)
 			})
 			s.endorsementsWg.Done()
 		}()
 	}
 	go func() {
-		time.AfterFunc(lastPoint.Sub(time.Now()), func() {
+		time.AfterFunc(lastPoint.Sub(time.Now().UTC()), func() {
 			s.ScheduleEndorsements()
 		})
 	}()
@@ -74,7 +74,7 @@ func (s *scheduler) ScheduleBakings() {
 		lastPoint = point
 		s.bakingsWg.Add(1)
 		go func() {
-			time.AfterFunc(point.Sub(time.Now()), func() {
+			time.AfterFunc(point.Sub(time.Now().UTC()), func() {
 				b, err := s.api.GetCurrentBlock()
 				if err != nil {
 					log.Println(err)
@@ -85,7 +85,7 @@ func (s *scheduler) ScheduleBakings() {
 		}()
 	}
 	go func() {
-		time.AfterFunc(lastPoint.Sub(time.Now()), func() {
+		time.AfterFunc(lastPoint.Sub(time.Now().UTC()), func() {
 			s.ScheduleBakings()
 		})
 	}()
