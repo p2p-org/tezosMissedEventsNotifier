@@ -67,7 +67,7 @@ func (s *scheduler) ScheduleBakings() {
 	}
 	var lastPoint time.Time
 	for _, bake := range bakes {
-		if bake.EstimatedTime.Year() == 1 {
+		if bake.EstimatedTime.Year() == 1 || bake.Priority > 0 {
 			continue
 		}
 		point := bake.EstimatedTime
@@ -75,11 +75,7 @@ func (s *scheduler) ScheduleBakings() {
 		s.bakingsWg.Add(1)
 		go func() {
 			time.AfterFunc(point.Sub(time.Now().UTC()), func() {
-				b, err := s.api.GetCurrentBlock()
-				if err != nil {
-					log.Println(err)
-				}
-				api.CheckBlock(b)
+				api.CheckBake(s.api, &bake)
 				s.bakingsWg.Done()
 			})
 		}()

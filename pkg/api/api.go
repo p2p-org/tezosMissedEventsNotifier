@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+
+	tzkt "github.com/dipdup-net/go-lib/tzkt/api"
 )
 
 const (
@@ -24,6 +26,7 @@ type api struct {
 	baseURl  string
 	delegate string
 	cycle    int
+	tzkt     *tzkt.API
 }
 
 func (a *api) GetCurrentBlock() (b *Block, err error) {
@@ -82,5 +85,5 @@ func (a *api) GetBakes() (bakes []Bake, err error) {
 }
 
 func NewApi(baseURl, delegate string, cycle int) API {
-	return &api{baseURl: baseURl, delegate: delegate, cycle: cycle}
+	return &api{baseURl: baseURl, delegate: delegate, cycle: cycle, tzkt: tzkt.New("https://api.tzkt.io/")}
 }

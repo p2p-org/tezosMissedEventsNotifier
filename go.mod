@@ -3,6 +3,7 @@ module tezos/missedEventsNotifier
 go 1.16
 
 require (
+	github.com/dipdup-net/go-lib v0.1.8
 	github.com/prometheus/client_golang v1.11.0
 	github.com/stretchr/testify v1.5.1
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
