@@ -22,9 +22,9 @@ func main() {
 	}
 	tzApi := api.NewApi(config.Host, config.Delegate)
 	scheduler := scheduling.NewScheduler(tzApi)
-	scheduler.EndorsementsWg().Add(1)
+	scheduler.EndorsementsWg().Add(2)
 	scheduler.ScheduleEndorsements()
-	scheduler.BakingsWg().Add(1)
+	scheduler.BakingsWg().Add(2)
 	scheduler.ScheduleBakings()
 	scheduler.BakingsWg().Wait()
 	scheduler.EndorsementsWg().Wait()

@@ -48,11 +48,11 @@ func CheckEndorsement(e *Endorsement, api API) bool {
 
 	for _, value := range m {
 		if !value {
-			log.Printf("Endorsement at %v failed", e.EstimatedTime)
+			log.Printf("Endorsement at level %d failed", e.Level)
 			endorsementsMissed.Inc()
 			return false
 		}
 	}
-	log.Printf("Endorsement at %v fsuccessful", e.EstimatedTime)
+	log.Printf("Endorsement at level %d fsuccessful", e.Level)
 	return true
 }

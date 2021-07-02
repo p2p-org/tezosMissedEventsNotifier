@@ -23,6 +23,7 @@ var (
 )
 
 func CheckBake(tzapi API, b *Bake) bool {
+	log.Printf("Checking bake for level %d", b.Level)
 	block, err := tzapi.(*api).tzkt.GetBlock(uint64(b.Level))
 	if err != nil {
 		log.Println(err)

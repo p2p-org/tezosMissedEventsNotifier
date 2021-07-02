@@ -58,6 +58,7 @@ func (a *api) getList(what string) (*http.Response, error) {
 	q.Add("cycle", strconv.Itoa(a.cycle))
 	q.Add("delegate", a.delegate)
 	req.URL.RawQuery = q.Encode()
+	log.Println(req.URL.String())
 	resp, err := http.Get(req.URL.String())
 	if err != nil {
 		return nil, err
@@ -80,7 +81,7 @@ func (a *api) GetEndorsements() (endorsements []Endorsement, err error) {
 }
 
 func (a *api) GetBakes() (bakes []Bake, err error) {
-	resp, err := a.getList(endorsing)
+	resp, err := a.getList(baking)
 	if err != nil {
 		return nil, err
 	}

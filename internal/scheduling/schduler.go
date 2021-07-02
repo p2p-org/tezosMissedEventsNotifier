@@ -44,6 +44,8 @@ func (s *scheduler) ScheduleEndorsements() {
 		point := endorsement.EstimatedTime.Add(time.Second)
 		lastPoint = point
 		s.endorsementsWg.Add(1)
+		// log.Printf("Scheduling endorsement for level %d", endorsement.Level)
+		endorsement := endorsement
 		go func() {
 			time.AfterFunc(point.Sub(time.Now().UTC()), func() {
 				api.CheckEndorsement(&endorsement, s.api)
@@ -73,6 +75,8 @@ func (s *scheduler) ScheduleBakings() {
 		point := bake.EstimatedTime
 		lastPoint = point
 		s.bakingsWg.Add(1)
+		bake := bake
+		log.Printf("Scheudling bake checks for level %d", bake.Level)
 		go func() {
 			time.AfterFunc(point.Sub(time.Now().UTC()), func() {
 				api.CheckBake(s.api, &bake)
