@@ -9,7 +9,6 @@ import (
 type ApiConfig struct {
 	Host     string `yaml:"host"`
 	Delegate string `yaml:"delegate"`
-	Cycle    string `yaml:"cycle"`
 }
 
 func GetConfig(filename string) (config *ApiConfig, err error) {

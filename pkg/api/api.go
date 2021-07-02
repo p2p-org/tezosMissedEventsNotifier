@@ -43,6 +43,11 @@ func (a *api) GetCurrentBlock() (b *Block, err error) {
 }
 
 func (a *api) getList(what string) (*http.Response, error) {
+	b, err := a.GetCurrentBlock()
+	if err != nil {
+		return nil, err
+	}
+	a.cycle = b.Metadata.LevelInfo.Cycle
 	req, err := http.NewRequest("GET", a.baseURl+fmt.Sprintf(listSuffixFormat, what), nil)
 	if err != nil {
 		return nil, err
@@ -84,6 +89,6 @@ func (a *api) GetBakes() (bakes []Bake, err error) {
 	return bakes, nil
 }
 
-func NewApi(baseURl, delegate string, cycle int) API {
-	return &api{baseURl: baseURl, delegate: delegate, cycle: cycle, tzkt: tzkt.New("https://api.tzkt.io/")}
+func NewApi(baseURl, delegate string) API {
+	return &api{baseURl: baseURl, delegate: delegate, tzkt: tzkt.New("https://api.tzkt.io/")}
 }
