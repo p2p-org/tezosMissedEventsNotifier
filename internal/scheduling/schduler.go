@@ -76,7 +76,7 @@ func (s *scheduler) ScheduleBakings() {
 		lastPoint = point
 		s.bakingsWg.Add(1)
 		bake := bake
-		log.Printf("Scheudling bake checks for level %d", bake.Level)
+		log.Printf("Scheduling bake checks for level %d", bake.Level)
 		go func() {
 			time.AfterFunc(point.Sub(time.Now().UTC()), func() {
 				api.CheckBake(s.api, &bake)

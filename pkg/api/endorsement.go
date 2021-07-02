@@ -1,7 +1,6 @@
 package api
 
 import (
-	"log"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -22,37 +21,45 @@ var (
 	})
 )
 
-func CheckEndorsement(e *Endorsement, api API) bool {
-	m := make(map[int]bool)
-	for _, item := range e.Slots {
-		m[item] = false
-	}
-	block, err := api.GetCurrentBlock()
-	if err != nil {
-		log.Println(err)
-		log.Printf("Endorsement at %v failed", e.EstimatedTime)
-		return false
-	}
+func CheckEndorsement(e *Endorsement, tzapi API) bool {
+	//m := make(map[int]bool)
+	//for _, item := range e.Slots {
+	//	m[item] = false
+	//}
+	//
+	//block, err := tzapi.(*api).tzkt.GetBlock(uint64(b.Level))
+	//if err != nil {
+	//	log.Println(err)
+	//	return false
+	//}
 
-	for _, collection := range block.Operations {
-		for _, operation := range collection {
-			for _, item := range operation.Contents {
-				if item.Kind == "endorsement" {
-					if _, ok := m[item.Slot]; ok {
-						m[item.Slot] = true
-					}
-				}
-			}
-		}
-	}
-
-	for _, value := range m {
-		if !value {
-			log.Printf("Endorsement at level %d failed", e.Level)
-			endorsementsMissed.Inc()
-			return false
-		}
-	}
-	log.Printf("Endorsement at level %d fsuccessful", e.Level)
+	//block, err := api.GetCurrentBlock()
+	//if err != nil {
+	//	log.Println(err)
+	//	log.Printf("Endorsement at %v failed", e.EstimatedTime)
+	//	return false
+	//}
+	//
+	//for _, collection := range block.Operations {
+	//	for _, operation := range collection {
+	//		for _, item := range operation.Contents {
+	//			if item.Kind == "endorsement" {
+	//				if _, ok := m[item.Slot]; ok {
+	//					m[item.Slot] = true
+	//				}
+	//			}
+	//		}
+	//	}
+	//}
+	//
+	//for _, value := range m {
+	//	if !value {
+	//		log.Printf("Endorsement at level %d failed", e.Level)
+	//		endorsementsMissed.Inc()
+	//		return false
+	//	}
+	//}
+	//log.Printf("Endorsement at level %d fsuccessful", e.Level)
+	//return true
 	return true
 }
