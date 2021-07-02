@@ -1,8 +1,11 @@
 package api
 
 import (
+	"context"
+	"log"
 	"time"
 
+	"blockwatch.cc/tzstats-go"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 )
@@ -22,6 +25,27 @@ var (
 )
 
 func CheckEndorsement(e *Endorsement, tzapi API) bool {
+	client := tzapi.(*api).client
+	block, err := client.GetBlockHeight(context.TODO(), int64(e.Level), tzstats.NewBlockParams())
+	if err != nil {
+		log.Printf("Error while validating endorsement %d", e.Level)
+		log.Println(err)
+		return false
+	}
+	for _, op := range block.Ops {
+		log.Printf("Discovered delegate %s", op.Delegate.String())
+		if op.Type == 9 && op.Delegate.String() == e.Delegate {
+			if op.IsSuccess {
+				log.Printf("Endorsement %d is successful", e.Level)
+				return true
+			} else {
+				endorsementsMissed.Inc()
+				log.Printf("Endorsement %d is missed", e.Level)
+				return false
+			}
+		}
+	}
+	return false
 	//m := make(map[int]bool)
 	//for _, item := range e.Slots {
 	//	m[item] = false

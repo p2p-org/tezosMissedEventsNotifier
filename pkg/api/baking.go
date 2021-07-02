@@ -1,9 +1,11 @@
 package api
 
 import (
+	"context"
 	"log"
 	"time"
 
+	"blockwatch.cc/tzstats-go"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 )
@@ -24,7 +26,7 @@ var (
 
 func CheckBake(tzapi API, b *Bake) bool {
 	log.Printf("Checking bake for level %d", b.Level)
-	block, err := tzapi.(*api).tzkt.GetBlock(uint64(b.Level))
+	block, err := tzapi.(*api).client.GetBlockHeight(context.TODO(), int64(b.Level), tzstats.NewBlockParams())
 	if err != nil {
 		log.Println(err)
 		return false

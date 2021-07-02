@@ -16,13 +16,12 @@ const (
 )
 
 var delegate = "tz1P2Po7YM526ughEsRbY4oR9zaUPDZjxFrb"
-var api1 = NewApi("https://mainnet-tezos.giganode.io/", delegate, 375)
-var api2 = NewApi("https://rpc.tzbeta.net", delegate, 375)
+var api1 = NewApi("mainnet-tezos.giganode.io", delegate)
 
 func Test_api_GetCurrentBlock(t *testing.T) {
 	b1, err := api1.GetCurrentBlock()
 	assert.NoError(t, err)
-	b2, err := api2.GetCurrentBlock()
+	b2, err := api1.GetCurrentBlock()
 	assert.NoError(t, err)
 	assert.Equal(t, b1.Hash, b2.Hash)
 }
