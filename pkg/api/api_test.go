@@ -16,7 +16,7 @@ const (
 )
 
 var delegate = "tz1P2Po7YM526ughEsRbY4oR9zaUPDZjxFrb"
-var api1 = NewApi("mainnet-tezos.giganode.io", delegate)
+var api1 = NewAPI("mainnet-tezos.giganode.io", delegate)
 
 func Test_api_GetCurrentBlock(t *testing.T) {
 	b1, err := api1.GetCurrentBlock()

@@ -6,19 +6,21 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-type ApiConfig struct {
+// APIConfig stores configs parsed from ./config/config.yaml
+type APIConfig struct {
 	Host     string `yaml:"host"`
 	Delegate string `yaml:"delegate"`
 }
 
-func GetConfig(filename string) (config *ApiConfig, err error) {
+// GetConfig reads config from the file
+func GetConfig(filename string) (config *APIConfig, err error) {
 	f, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
 	defer f.Close()
 
-	var conf ApiConfig
+	var conf APIConfig
 	decoder := yaml.NewDecoder(f)
 	err = decoder.Decode(&conf)
 	if err != nil {

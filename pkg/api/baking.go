@@ -10,6 +10,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 )
 
+// Bake is a struct corresponding to bake opertation from the Tezos RPC API
 type Bake struct {
 	Level         int       `json:"level"`
 	Delegate      string    `json:"delegate"`
@@ -24,6 +25,7 @@ var (
 	})
 )
 
+// CheckBake determines if bake was not missed and reports miss to Prom
 func CheckBake(tzapi API, b *Bake) bool {
 	log.Printf("Checking bake for level %d", b.Level)
 	block, err := tzapi.(*api).client.GetBlockHeight(context.TODO(), int64(b.Level), tzstats.NewBlockParams())

@@ -4,6 +4,7 @@ import (
 	"time"
 )
 
+// Block corresponds to Block from the Tezos RPC API
 type Block struct {
 	Protocol string `json:"protocol"`
 	ChainID  string `json:"chain_id"`

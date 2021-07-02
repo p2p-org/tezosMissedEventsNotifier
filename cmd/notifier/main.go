@@ -20,8 +20,8 @@ func main() {
 	if err != nil {
 		log.Fatalln("Failed to read config")
 	}
-	tzApi := api.NewApi(config.Host, config.Delegate)
-	scheduler := scheduling.NewScheduler(tzApi)
+	tzAPI := api.NewAPI(config.Host, config.Delegate)
+	scheduler := scheduling.NewScheduler(tzAPI)
 	scheduler.EndorsementsWg().Add(2)
 	scheduler.ScheduleEndorsements()
 	scheduler.BakingsWg().Add(2)

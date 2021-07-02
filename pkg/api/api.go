@@ -23,6 +23,7 @@ const (
 	tezosTimeFormat = "2006-01-02T15:04:05Z"
 )
 
+// API provides interface to work with Tezos RPC API
 type API interface {
 	GetCurrentBlock() (b *Block, err error)
 	GetEndorsements() ([]Endorsement, error)
@@ -31,14 +32,14 @@ type API interface {
 }
 
 type api struct {
-	baseURl  string
+	baseURL  string
 	delegate string
 	cycle    int
 	client   *tzstats.Client
 }
 
 func (a *api) GetBlockByHash(hash string) (b *Block, err error) {
-	url := "https://" + path.Join(a.baseURl, fmt.Sprintf(blockByHashSuffix, hash))
+	url := "https://" + path.Join(a.baseURL, fmt.Sprintf(blockByHashSuffix, hash))
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
@@ -51,39 +52,8 @@ func (a *api) GetBlockByHash(hash string) (b *Block, err error) {
 	return b, nil
 }
 
-//func (a *api) getExpectedBlock(estTime time.Time, d int) (b *Block, err error) {
-//	suffix := fmt.Sprintf(blockByLevelSuffix, d, estTime.Format(tezosTimeFormat))
-//	url := "https://" + path.Join(a.baseURl, suffix)
-//	resp, err := http.Get(url)
-//	if err != nil {
-//		return nil, err
-//	}
-//	b = new(Block)
-//	err = json.NewDecoder(resp.Body).Decode(b)
-//	if err != nil {
-//		return nil, err
-//	}
-//	return b, nil
-//}
-//
-//func abs(x int) int {
-//	if x > 0 {
-//		return x
-//	}
-//	return -x
-//}
-//
-//func (a *api) GetBlock(level int) (b *Block, err error) {
-//	block, err := a.client.GetBlockHeight(context.TODO(), int64(level), tzstats.NewBlockParams())
-//	if err != nil {
-//		return nil, err
-//	}
-//	block.Ops
-//	return b, nil
-//}
-
 func (a *api) GetCurrentBlock() (b *Block, err error) {
-	resp, err := http.Get("https://" + a.baseURl + currentBlockSuffix)
+	resp, err := http.Get("https://" + a.baseURL + currentBlockSuffix)
 	if err != nil {
 		return nil, err
 	}
@@ -102,7 +72,7 @@ func (a *api) getList(what string) (*http.Response, error) {
 	}
 	a.cycle = b.Metadata.LevelInfo.Cycle
 	log.Printf("Current cycle %d\n", a.cycle)
-	req, err := http.NewRequest("GET", "https://"+a.baseURl+fmt.Sprintf(listSuffixFormat, what), nil)
+	req, err := http.NewRequest("GET", "https://"+a.baseURL+fmt.Sprintf(listSuffixFormat, what), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -144,7 +114,8 @@ func (a *api) GetBakes() (bakes []Bake, err error) {
 	return bakes, nil
 }
 
-func NewApi(baseURl, delegate string) API {
+// NewAPI is an API constructor
+func NewAPI(baseURL, delegate string) API {
 	c, _ := tzstats.NewClient("https://api.edo.tzstats.com", nil)
-	return &api{baseURl: baseURl, delegate: delegate, client: c}
+	return &api{baseURL: baseURL, delegate: delegate, client: c}
 }

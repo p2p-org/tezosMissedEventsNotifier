@@ -8,6 +8,7 @@ import (
 	"tezos/missedEventsNotifier/pkg/api"
 )
 
+// Scheduler provides interface to schedule endorsements and bakes checks
 type Scheduler interface {
 	ScheduleEndorsements()
 	ScheduleBakings()
@@ -91,6 +92,7 @@ func (s *scheduler) ScheduleBakings() {
 	}()
 }
 
+// NewScheduler is a Scheduler constructor
 func NewScheduler(tzapi api.API) Scheduler {
 	return &scheduler{api: tzapi}
 }
