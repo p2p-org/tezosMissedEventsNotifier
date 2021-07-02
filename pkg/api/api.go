@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -48,6 +49,7 @@ func (a *api) getList(what string) (*http.Response, error) {
 		return nil, err
 	}
 	a.cycle = b.Metadata.LevelInfo.Cycle
+	log.Printf("Current cycle %d\n", a.cycle)
 	req, err := http.NewRequest("GET", a.baseURl+fmt.Sprintf(listSuffixFormat, what), nil)
 	if err != nil {
 		return nil, err

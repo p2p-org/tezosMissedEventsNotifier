@@ -36,7 +36,7 @@ func (s *scheduler) ScheduleEndorsements() {
 	if err != nil {
 		log.Println(err)
 	}
-	var lastPoint time.Time
+	lastPoint := time.Now().UTC()
 	for _, endorsement := range endorsements {
 		if endorsement.EstimatedTime.Year() == 1 {
 			continue
@@ -65,7 +65,7 @@ func (s *scheduler) ScheduleBakings() {
 	if err != nil {
 		log.Println(err)
 	}
-	var lastPoint time.Time
+	lastPoint := time.Now().UTC()
 	for _, bake := range bakes {
 		if bake.EstimatedTime.Year() == 1 || bake.Priority > 0 {
 			continue

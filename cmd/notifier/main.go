@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
@@ -21,11 +20,7 @@ func main() {
 	if err != nil {
 		log.Fatalln("Failed to read config")
 	}
-	cycle, err := strconv.Atoi(config.Cycle)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	tzApi := api.NewApi(config.Host, config.Delegate, cycle)
+	tzApi := api.NewApi(config.Host, config.Delegate)
 	scheduler := scheduling.NewScheduler(tzApi)
 	scheduler.EndorsementsWg().Add(1)
 	scheduler.ScheduleEndorsements()
