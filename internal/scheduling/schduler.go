@@ -70,7 +70,7 @@ func (s *scheduler) ScheduleBakings() {
 		if bake.EstimatedTime.Year() == 1 {
 			continue
 		}
-		point := bake.EstimatedTime.Add(time.Second)
+		point := bake.EstimatedTime
 		lastPoint = point
 		s.bakingsWg.Add(1)
 		go func() {
