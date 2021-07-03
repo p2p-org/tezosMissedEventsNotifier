@@ -22,6 +22,10 @@ type scheduler struct {
 	bakingsWg      sync.WaitGroup
 }
 
+var (
+	endorsementCheckDelta = time.Duration(3) * time.Minute
+)
+
 func (s *scheduler) EndorsementsWg() *sync.WaitGroup {
 	return &s.endorsementsWg
 }
@@ -42,7 +46,7 @@ func (s *scheduler) ScheduleEndorsements() {
 		if endorsement.EstimatedTime.Year() == 1 {
 			continue
 		}
-		point := endorsement.EstimatedTime.Add(time.Second)
+		point := endorsement.EstimatedTime.Add(endorsementCheckDelta)
 		lastPoint = point
 		s.endorsementsWg.Add(1)
 		// log.Printf("Scheduling endorsement for level %d", endorsement.Level)
@@ -55,7 +59,7 @@ func (s *scheduler) ScheduleEndorsements() {
 		}()
 	}
 	go func() {
-		time.AfterFunc(lastPoint.Sub(time.Now().UTC()), func() {
+		time.AfterFunc(lastPoint.Sub(time.Now().UTC())+endorsementCheckDelta, func() {
 			s.ScheduleEndorsements()
 		})
 	}()
