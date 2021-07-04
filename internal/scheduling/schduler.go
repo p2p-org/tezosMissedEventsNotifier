@@ -23,7 +23,7 @@ type scheduler struct {
 }
 
 var (
-	endorsementCheckDelta = time.Duration(3) * time.Minute
+	endorsementCheckDelta = time.Duration(60) * time.Minute
 )
 
 func (s *scheduler) EndorsementsWg() *sync.WaitGroup {
