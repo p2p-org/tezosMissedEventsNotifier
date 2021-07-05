@@ -1,11 +1,10 @@
 package api
 
 import (
-	"context"
 	"log"
+	"strings"
 	"time"
 
-	"blockwatch.cc/tzstats-go"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 )
@@ -25,27 +24,37 @@ var (
 	})
 )
 
+func testEq(a, b []int) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
+}
+
 // CheckEndorsement checks the endorsement and reports problem to Prom
 func CheckEndorsement(e *Endorsement, tzapi API) bool {
-	client := tzapi.(*api).client
-	block, err := client.GetBlockHeight(context.TODO(), int64(e.Level), tzstats.NewBlockParams())
+	b, err := tzapi.GetBlockByHeight(e.Level)
 	if err != nil {
-		log.Printf("Error while validating endorsement %d", e.Level)
+		log.Printf("error checking endorsement lvl %d", e.Level)
 		log.Println(err)
 		return false
 	}
-	for _, op := range block.Ops {
-		log.Printf("Discovered delegate %s", op.Delegate.String())
-		if op.Type == 9 && op.Delegate.String() == e.Delegate {
-			if op.IsSuccess {
-				log.Printf("Endorsement %d is successful", e.Level)
-				return true
+	for _, ops := range b.Operations {
+		for _, op := range ops {
+			for _, cont := range op.Contents {
+				if strings.HasPrefix(cont.Kind, "endorsement") && cont.Metadata.Delegate == e.Delegate && testEq(e.Slots, cont.Metadata.Slots) {
+					log.Println("Success lvl %d", e.Level)
+					return true
+				}
 			}
-			endorsementsMissed.Inc()
-			log.Printf("Endorsement %d is missed", e.Level)
-			return false
-
 		}
 	}
+	log.Printf("Missed endorsement %d", e.Level)
+	endorsementsMissed.Inc()
 	return false
 }

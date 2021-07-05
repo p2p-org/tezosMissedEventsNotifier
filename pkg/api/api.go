@@ -28,6 +28,7 @@ type API interface {
 	GetCurrentBlock() (b *Block, err error)
 	GetEndorsements() ([]Endorsement, error)
 	GetBakes() ([]Bake, error)
+	GetBlockByHeight(height int) (b *Block, err error)
 	// GetBlock(estTime time.Time, level int) (b *Block, err error)
 }
 
@@ -50,6 +51,10 @@ func (a *api) GetBlockByHash(hash string) (b *Block, err error) {
 		return nil, err
 	}
 	return b, nil
+}
+
+func (a *api) GetBlockByHeight(height int) (b *Block, err error) {
+	return a.GetBlockByHash(strconv.Itoa(height))
 }
 
 func (a *api) GetCurrentBlock() (b *Block, err error) {

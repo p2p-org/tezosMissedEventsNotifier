@@ -1,11 +1,9 @@
 package api
 
 import (
-	"context"
 	"log"
 	"time"
 
-	"blockwatch.cc/tzstats-go"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 )
@@ -28,12 +26,12 @@ var (
 // CheckBake determines if bake was not missed and reports miss to Prom
 func CheckBake(tzapi API, b *Bake) bool {
 	log.Printf("Checking bake for level %d", b.Level)
-	block, err := tzapi.(*api).client.GetBlockHeight(context.TODO(), int64(b.Level), tzstats.NewBlockParams())
+	block, err := tzapi.GetBlockByHeight(b.Level)
 	if err != nil {
 		log.Println(err)
 		return false
 	}
-	if block.Priority > 0 {
+	if block.Header.Priority > 0 {
 		bakesMissed.Inc()
 		log.Printf("bake missed for block %s\n", block.Hash)
 		return false
