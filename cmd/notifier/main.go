@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	log.Println("Running beta v1")
+	log.Println("Running beta v2")
 	go func() {
 		http.Handle("/metrics", promhttp.Handler())
 		http.ListenAndServe(":2112", nil)

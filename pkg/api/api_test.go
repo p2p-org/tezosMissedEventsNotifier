@@ -39,3 +39,9 @@ func Test_api_GetEndorsements(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotZero(t, len(b1))
 }
+
+func Test_api_GetBlockByHeight(t *testing.T) {
+	b, err := api1.GetBlockByHeight(1544010)
+	assert.NoError(t, err)
+	assert.Equal(t, 1544010, b.Metadata.Level)
+}

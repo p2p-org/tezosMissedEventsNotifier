@@ -39,16 +39,14 @@ func testEq(a, b []int) bool {
 // CheckEndorsement checks the endorsement and reports problem to Prom
 func CheckEndorsement(e *Endorsement, tzapi API) bool {
 	b, err := tzapi.GetBlockByHeight(e.Level)
-	if err != nil {
-		log.Printf("error checking endorsement lvl %d", e.Level)
-		log.Println(err)
-		return false
+	for err != nil {
+		b, err = tzapi.GetBlockByHeight(e.Level)
 	}
 	for _, ops := range b.Operations {
 		for _, op := range ops {
 			for _, cont := range op.Contents {
 				if strings.HasPrefix(cont.Kind, "endorsement") && cont.Metadata.Delegate == e.Delegate && testEq(e.Slots, cont.Metadata.Slots) {
-					log.Println("Success lvl %d", e.Level)
+					log.Printf("Success lvl %d", e.Level)
 					return true
 				}
 			}

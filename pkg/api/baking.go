@@ -27,9 +27,8 @@ var (
 func CheckBake(tzapi API, b *Bake) bool {
 	log.Printf("Checking bake for level %d", b.Level)
 	block, err := tzapi.GetBlockByHeight(b.Level)
-	if err != nil {
-		log.Println(err)
-		return false
+	for err != nil {
+		block, err = tzapi.GetBlockByHeight(b.Level)
 	}
 	if block.Header.Priority > 0 {
 		bakesMissed.Inc()

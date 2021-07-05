@@ -41,6 +41,7 @@ type api struct {
 
 func (a *api) GetBlockByHash(hash string) (b *Block, err error) {
 	url := "https://" + path.Join(a.baseURL, fmt.Sprintf(blockByHashSuffix, hash))
+	log.Println(url)
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
